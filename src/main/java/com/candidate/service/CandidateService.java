@@ -1,12 +1,14 @@
 package com.candidate.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Service;
 
+import com.candidate.model.CandidateRequest;
 import com.candidate.model.CandidateResponse;
 
 @Service
@@ -16,6 +18,16 @@ public class CandidateService {
 	
 	public List<CandidateResponse> getCandidates(){
 		return candidateList;
+	}
+
+	public CandidateResponse getCandidate(int candidateId){
+		return candidateList.stream().filter(candidate -> candidate.getCandidateId() == candidateId).findFirst().get();
+	}
+	
+	public CandidateResponse addCandidate(CandidateRequest candidateRequest){
+		CandidateResponse newCandidate = addCandidateRequest(candidateRequest);
+		candidateList.add(newCandidate);
+		return newCandidate;
 	}
 	
 	@PostConstruct
@@ -33,5 +45,15 @@ public class CandidateService {
 		return candidates;
 	}
 	
-	
+	private CandidateResponse addCandidateRequest(CandidateRequest candidateRequest){
+		CandidateResponse candidateResponse = new CandidateResponse();
+		
+		candidateResponse.setFirstName(candidateRequest.getFirstName());
+		candidateResponse.setLastName(candidateRequest.getLastName());
+		candidateResponse.setMiddleName(candidateRequest.getMiddleName());
+		candidateResponse.setEmailAddress(candidateRequest.getEmailAddress());
+		CandidateResponse maxCandidateId = candidateList.stream().max(Comparator.comparingInt(CandidateResponse::getCandidateId)).get();
+		candidateResponse.setCandidateId(maxCandidateId.getCandidateId() + 1);
+		return candidateResponse;
+	}
 }

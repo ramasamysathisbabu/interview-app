@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,13 +23,17 @@ public class CandidateController {
 	
 	@PostMapping("/candidates")
 	public CandidateResponse createCandidate(@RequestBody CandidateRequest candidateRequest){
-		CandidateResponse response = new CandidateResponse();
-		return response;
+		return candidateService.addCandidate(candidateRequest);
 	}
 	
 	@GetMapping("/candidates")
 	public List<CandidateResponse> getCandidates(){
-		return candidateService.getCandidates(); 
+		return candidateService.getCandidates();
 	}
 
+	@GetMapping("/candidates/{id}")
+	public CandidateResponse getCandidate(@PathVariable String id){
+		return candidateService.getCandidate(Integer.valueOf(id));
+	}
+	
 }
